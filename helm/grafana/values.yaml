@@ -1,0 +1,48 @@
+persistence:
+  enabled: true
+  type: pvc
+  size: 5Gi
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+
+    datasources:
+      - name: Prometheus
+        uid: prometheus
+        type: prometheus
+        access: proxy
+        url: http://prometheus-server
+        isDefault: true
+
+      - name: Loki
+        uid: loki
+        type: loki
+        access: proxy
+        url: http://loki-gateway
+        isDefault: false
+
+      - name: Tempo
+        uid: tempo
+        type: tempo
+        access: proxy
+        url: http://tempo:3200
+        isDefault: false
+
+        jsonData:
+          tracesToLogsV2:
+            datasourceUid: loki
+
+          tracesToMetrics:
+            datasourceUid: prometheus
+
+          serviceMap:
+            datasourceUid: prometheus

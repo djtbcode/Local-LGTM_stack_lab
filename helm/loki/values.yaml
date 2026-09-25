@@ -1,6 +1,10 @@
 deploymentMode: Monolithic
 
 loki:
+  auth_enabled: false
+  limits_config:
+      volume_enabled: true
+
   commonConfig:
     replication_factor: 1
 
@@ -69,4 +73,4 @@ bloomBuilder:
   replicas: 0
 
 bloomGateway:
-  replicas: 0
+  replicas: :0
