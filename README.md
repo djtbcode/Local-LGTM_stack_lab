@@ -1,1 +1,3 @@
-# Local-LGTM_stack_lab
+# Local LGTM stack lab
+
+Local lab to practice observability 
