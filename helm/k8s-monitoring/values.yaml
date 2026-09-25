@@ -1,0 +1,85 @@
+cluster:
+  name: homelab-minikube
+
+destinations:
+  prometheus:
+    type: prometheus
+    url: http://prometheus-server.observability.svc.cluster.local/api/v1/write
+
+  loki:
+    type: loki
+    url: http://loki-gateway.observability.svc.cluster.local/loki/api/v1/push
+
+  tempo:
+    type: otlp
+    protocol: http
+    url: http://tempo.observability.svc.cluster.local:4318
+    metrics:
+      enabled: false
+    logs:
+      enabled: false
+    traces:
+      enabled: true
+      
+clusterMetrics:
+  enabled: true
+  collector: alloy-metrics
+  destinations:
+    - prometheus
+
+  kube-state-metrics:
+    enabled: false
+
+clusterEvents:
+  enabled: true
+  collector: alloy-singleton
+  destinations:
+    - loki
+
+podLogsViaLoki:
+  enabled: true
+  collector: alloy-logs
+  destinations:
+    - loki
+
+applicationObservability:
+  enabled: true
+  collector: alloy-receiver
+  destinations:
+    - prometheus
+    - loki
+    - tempo
+
+  receivers:
+    otlp:
+      grpc:
+        enabled: true
+        port: 4317
+
+      http:
+        enabled: true
+        port: 4318
+
+collectors:
+  alloy-metrics:
+    presets:
+      - clustered
+      - statefulset
+
+  alloy-singleton:
+    presets:
+      - singleton
+
+  alloy-logs:
+    presets:
+      - filesystem-log-reader
+      - daemonset
+
+  alloy-receiver: {}
+
+telemetryServices:
+  kube-state-metrics:
+    deploy: false
+
+  node-exporter:
+    deploy: false
