@@ -20,7 +20,7 @@ destinations:
       enabled: false
     traces:
       enabled: true
-
+      
 clusterMetrics:
   enabled: true
   collector: alloy-metrics
